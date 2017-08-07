@@ -1,6 +1,7 @@
 import os
 import unittest
 from appium import webdriver
+from appium.webdriver.common.touch_action import TouchAction
 from time import sleep
 
 
@@ -9,25 +10,37 @@ class MyOb(unittest.TestCase):
 
     def setUp(self):
         "Setup for the test"
-        desired_caps = {}
-        desired_caps['platformName'] = 'Android'
-        desired_caps['platformVersion'] = '5.0.1'
-        desired_caps['deviceName'] = 'K01Q'
-        desired_caps['appPackage'] = 'hko.MyObservatory_v1_0'
-        desired_caps['appActivity'] = '.AgreementPage'
+        #the landing page of this test is agreement page
+        desired_caps = {'platformName': 'Android', 'platformVersion': '5.0.1', 'deviceName': 'K01Q',
+                        'appPackage': 'hko.MyObservatory_v1_0', 'appActivity': '.AgreementPage'}
         self.driver = webdriver.Remote('http://localhost:4723/wd/hub', desired_caps)
 
     def tearDown(self):
         "Tear down the test"
         self.driver.quit()
 
-    def test_launch_app(self):
-        "launch and wait 5 seconds"
+    def test_HK_nine_days(self):
+        "test start"
+        agree_button = self.driver.find_element_by_id('hko.MyObservatory_v1_0:id/btn_agree')
+
+        agree_button.click()
+
+        agree_button.click()
+        sleep(3)
+        dismiss_button = self.driver.find_element_by_id('hko.MyObservatory_v1_0:id/btn_friendly_reminder_skip')
+        dismiss_button.click()
         sleep(5)
 
-    def test_nine_days(self):
-        self.driver.get_screenshot_as_file('test.png')
-        self.driver.close_app()
+        side_menu = self.driver.find_element_by_xpath('//android.widget.ImageButton[@content-desc="Navigate up"]')
+        side_menu.click()
+        sleep(3)
+
+        self.driver.swipe(100,930,100,600)
+        sleep(5)
+        action = TouchAction(self.driver)
+        action.tap(x=150,y=730).perform()
+
+        sleep(5)
 
 
 # ---START OF SCRIPT
