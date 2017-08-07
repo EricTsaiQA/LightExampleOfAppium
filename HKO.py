@@ -10,8 +10,7 @@ class MyOb(unittest.TestCase):
 
     def setUp(self):
         "Setup for the test"
-        #the landing page of this test is agreement page
-        desired_caps = {'platformName': 'Android', 'platformVersion': '5.0.1', 'deviceName': 'K01Q',
+        desired_caps = {'platformName': 'Android', 'platformVersion': '7.1.2', 'deviceName': 'Nexus 5X',
                         'appPackage': 'hko.MyObservatory_v1_0', 'appActivity': '.AgreementPage'}
         self.driver = webdriver.Remote('http://localhost:4723/wd/hub', desired_caps)
 
@@ -20,29 +19,56 @@ class MyOb(unittest.TestCase):
         self.driver.quit()
 
     def test_HK_nine_days(self):
-        "test start"
+        "Test case: open HK 9 days forecast"
         agree_button = self.driver.find_element_by_id('hko.MyObservatory_v1_0:id/btn_agree')
-
+        agree_button.click()
         agree_button.click()
 
-        agree_button.click()
-        sleep(3)
-        dismiss_button = self.driver.find_element_by_id('hko.MyObservatory_v1_0:id/btn_friendly_reminder_skip')
-        dismiss_button.click()
-        sleep(5)
+        sleep(1)
 
-        side_menu = self.driver.find_element_by_xpath('//android.widget.ImageButton[@content-desc="Navigate up"]')
-        side_menu.click()
+        self.driver.find_element_by_id('com.android.packageinstaller:id/permission_allow_button').click()
+        self.driver.find_element_by_id('hko.MyObservatory_v1_0:id/btn_friendly_reminder_skip').click()
+
         sleep(3)
 
-        self.driver.swipe(100,930,100,600)
-        sleep(5)
+        screen_size = self.driver.get_window_size()
+        max_width = screen_size["width"]
+        max_height = screen_size["height"]
+
         action = TouchAction(self.driver)
-        action.tap(x=150,y=730).perform()
+        action.tap(x=(max_width*0.06),y=(max_height*0.08)).perform()
+        #self.driver.find_element_by_android_uiautomator('new UiSelector().description("Navigate up")').click()
+        #Having problem to find side menu and i did not figure out why
+        #therefore i specified x,y positon to tap
+        sleep(2)
+        #scroll and tap HK 9-days forecast
+        el1 = self.driver.find_element_by_android_uiautomator('new UiSelector().text("Storm Track")')
+        el2 = self.driver.find_element_by_android_uiautomator('new UiSelector().text("Weather video")')
+        action.press(el1).move_to(el2).release().perform()
+        sleep(2)
+        self.driver.find_element_by_android_uiautomator('new UiSelector().text("HK 9-Day Forecast")').click()
+        sleep(2)
 
+        try:
+            el3 = self.driver.find_element_by_android_uiautomator('new UiSelector().text("8 Aug")')
+        except:
+            raise Exception('display problem in HK 9-Day forecast, please check 1')
+
+        action.press(x=(max_width*0.5),y=(max_height*0.9)).move_to(x=0,y=-(max_height*0.5)).release().perform()
+
+        try:
+            el4 = self.driver.find_element_by_android_uiautomator('new UiSelector().text("16 Aug")')
+        except:
+            raise Exception('display problem in HK 9-Day forecast, please check 2')
+
+        sleep(2)
+
+        #self.assertTrue(self.driver.find_element_by_android_uiautomator('new UiSelector().text("HK 9-Day Forecast")'),msg="HK 9-day forecast page is not opened")
         sleep(5)
+        self.driver.close_app() # return to device home
 
-
+#
+#
 # ---START OF SCRIPT
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(MyOb)
