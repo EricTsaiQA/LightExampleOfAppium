@@ -69,10 +69,13 @@ class MyOb(unittest.TestCase):
         # Browse page and collect forecast date to a list, eventually we should have 9 days forecast on this page
         forecast_raw = []
         detect_to_bottom = "null"
+        counter = 0
         forecast_date = []
 
         while True:
             logging.info('Browsing and try to find 9 days forecast on page')
+            screen_file_name = "HK_9days_forecast_" + str(counter) + ".png"
+            self.driver.save_screenshot(screen_file_name)
             sleep(1)
             forecast_raw.extend(self.driver.find_elements_by_id('hko.MyObservatory_v1_0:id/sevenday_forecast_date'))
 
@@ -85,6 +88,7 @@ class MyOb(unittest.TestCase):
             detect_to_bottom = forecast_date[-1]
             action.press(x=(max_width * 0.5), y=(max_height * 0.9)).move_to(x=0, y=-(max_height * 0.3)).perform()
             forecast_raw = []
+            counter +=1
             sleep(2)
 
         # Verification - make sure there are 9 days forecast show on page, show msg when failed

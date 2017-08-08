@@ -22,6 +22,7 @@ but you should modify above data in test script to fit your environment
 2. start appium service
 3. run  "python HKO.py"
 4. check console log also status on device
+5. you also can check screenshots of HK 9days forecast page to manually verification
 
 # Known issue
 Sometimes it fails when finding item "HK 9 Day forecast" in side menu. the script seems not did the "swipe" action on device
