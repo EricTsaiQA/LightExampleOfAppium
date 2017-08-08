@@ -30,4 +30,13 @@ I haven't digged into why this happend.
 The workaround is to kill and restart your appium service. Then run scritp agian.
 
 
+# Request of test case 
+1. Launcher app
+2. Open Side Menu
+3. Select item: 9-Day Weather Forecast
+4. Verify Forecast of the next 9 days are displayed
 
+# How scritp judge its FAIL
+1. fail to select "HK 9-day weather forecast" button in side menu
+2. fail to open HK 9-day weather forecast page
+3. fail to collect 9-day forecast data on page ( e.g. if we only found 8 days data, test will set to fail)
